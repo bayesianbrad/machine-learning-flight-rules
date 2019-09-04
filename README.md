@@ -3,7 +3,7 @@
 </h1>
 
 <h4 align='center'>
-    Parts of this repository are copied from: https://github.com/k88hudson/git-flight-rules
+    A guide for astronauts (now, people doing machine learning) about what to do when things go wrong.
 </h4>
 
 <p align='center'>
@@ -34,8 +34,6 @@
 # What are "flight rules"?
 
 #### Copied from: https://github.com/k88hudson/git-flight-rules
-
-A guide for astronauts (now, programmers using Git) about what to do when things go wrong.
 
 > _Flight Rules_ are the hard-earned body of knowledge recorded in manuals that list, step-by-step, what to do if X occurs, and why. Essentially, they are extremely detailed, scenario-specific standard operating procedures. [...]
 
