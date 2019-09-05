@@ -28,18 +28,29 @@
     <a href='#what-are-flight-rules'>What are flight rules?</a> •
     <a href='#contributing'>Contributing</a> •
     <a href='#authors'>Authors</a> •
-    <a href='#license'>License</a>
+    <a href='#license'>License</a> •
+    <a href='#acknowledgements'>Acknowledgements</a>
 </p>
 
 # What are "flight rules"?
 
-#### Copied from: https://github.com/k88hudson/git-flight-rules
+_Copied from: https://github.com/k88hudson/git-flight-rules_
 
 > _Flight Rules_ are the hard-earned body of knowledge recorded in manuals that list, step-by-step, what to do if X occurs, and why. Essentially, they are extremely detailed, scenario-specific standard operating procedures. [...]
 
 > NASA has been capturing our missteps, disasters and solutions since the early 1960s, when Mercury-era ground teams first started gathering "lessons learned" into a compendium that now lists thousands of problematic situations, from engine failure to busted hatch handles to computer glitches, and their solutions.
 
 &mdash; Chris Hadfield, _An Astronaut's Guide to Life_.
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+-   [Contributing](#contributing)
+-   [Authors](#authors)
+-   [License](#license)
+-   [Acknowledgements](#acknowledgements)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Contributing
 
