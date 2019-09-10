@@ -283,7 +283,7 @@ Nvidia's Volta and Turing GPUs contain tensor cores that can do fast fp16 matrix
 
 "True" half precision training casts the inputs and the model's parameters to 16 bit floats and computes everything using 16 bit floats. The advantages of this are that fp16 floats only use half the amount of vram as normal fp32 floats, letting you double the batch size while training. This is the fastest and most optimized way to take advantage of tensor cores, but comes at a cost. Using fp16 floats for the model's parameters and batch norm statistics means that if the gradients are small enough, they can underflow and be replaced by zeros.
 
-Mixed precision solves these problems at a small overhead by keeping a master copy of the model's parameters in 32 bit floats. The inputs and the model's parameters are still cast to fp16, but after the backwards pass, the gradients are copied to the master copy and cast to fp32. The parameters are updated in fp32 to prevent gradients from underflowing, and the new, updated master copy's parameters are cast to fp16 and copied to the original fp16 model. Nvidia's apex library recommends using mixed precision in a different way by casting inputs to tensor core-friendly operations to fp16 and keeping other operations in fp32. Both of these mixed precision approaches have an overhead compared to half precision training, but are faster and use less vram than fp32 training.
+Mixed precision solves these problems by keeping a master copy of the model's parameters in 32 bit floats. The inputs and the model's parameters are still cast to fp16, but after the backwards pass, the gradients are copied to the master copy and cast to fp32. The parameters are updated in fp32 to prevent gradients from underflowing, and the new, updated master copy's parameters are cast to fp16 and copied to the original fp16 model. Nvidia's apex library recommends using mixed precision in a different way by casting inputs to tensor core-friendly operations to fp16 and keeping other operations in fp32. Both of these mixed precision approaches have an overhead compared to half precision training, but are faster and use less vram than fp32 training.
 
 _example_
 
@@ -294,15 +294,59 @@ If you want to read more about half and mixed precision training, take a look at
 
 ### gradient accumulation
 
-### checkpointing
+If you want to train larger batches on a gpu without enough vram, gradient accumulation can help you out.
+
+The basic idea is this: call `optimizer.step()` every n minibatches, accumulating the gradients at each minibatch, effectively training on a minibatch of size `batch_size x n`.
+
+Here's a example showing how you could use gradient accumulation in pytorch, from (https://gist.github.com/thomwolf/ac7a7da6b1888c2eeac8ac8b9b05d3d3#file-gradient_accumulation-py):
+
+```python
+model.zero_grad()                                   # Reset gradients tensors
+for i, (inputs, labels) in enumerate(training_set):
+    predictions = model(inputs)                     # Forward pass
+    loss = loss_function(predictions, labels)       # Compute loss function
+    loss = loss / accumulation_steps                # Normalize our loss (if averaged)
+    loss.backward()                                 # Backward pass
+    if (i+1) % accumulation_steps == 0:             # Wait for several backward steps
+        optimizer.step()                            # Now we can do an optimizer step
+        model.zero_grad()                           # Reset gradients tensors
+        if (i+1) % evaluation_steps == 0:           # Evaluate the model when we...
+            evaluate_model()                        # ...have no gradients accumulated
+```
+
+If you want to read more about gradient accumulation, check out this blog post (https://medium.com/huggingface/training-larger-batches-practical-tips-on-1-gpu-multi-gpu-distributed-setups-ec88c3e51255)
 
 ### multi gpu/machine training
 
--   https://medium.com/huggingface/training-larger-batches-practical-tips-on-1-gpu-multi-gpu-distributed-setups-ec88c3e51255#
+If you have multiple gpus, you can easily convert your current code to train your model on multiple gpus. Just follow the official tutorials on pytorch.org (https://pytorch.org/tutorials/beginner/blitz/data_parallel_tutorial.html). The only problem with this is that Pytorch's build in `DataParallel` will gather the outputs from all the other gpus to gpu 1 to compute the loss and calculate gradients, using up more vram. There _is_ an alternative to this though, just use this alternative balanced data parallel implementation (https://gist.github.com/thomwolf/7e2407fbd5945f07821adae3d9fd1312).
+
+Take a look at (https://medium.com/huggingface/training-larger-batches-practical-tips-on-1-gpu-multi-gpu-distributed-setups-ec88c3e51255#) for more information about multi gpu and distributed training.
 
 ### determinism
 
+Pytorch will give you different results every time you run a script unless you set random seeds for python, numpy, and pytorch. Fortunately, doing this is very simple and only requires you to add a few lines to the top of each python file.
+
+```python
+SEED = 42
+np.random.seed(SEED)
+torch.manual_seed(SEED)
+torch.cuda.manual_seed(SEED)
+torch.backends.cudnn.deterministic = True
+```
+
+If you want a simple one-liner, check out my `pytorch_zoo` library on github (https://github.com/bkkaggle/pytorch_zoo#seed_environmentseed42).
+
+```python
+from pytorch_zoo.utils import seed_environment
+
+seed_environment(42)
+```
+
+If you want more information on determinism in pytorch, take a look at these articles:
+
 -   https://discuss.pytorch.org/t/how-to-get-deterministic-behavior/18177/7
+-   https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/72770
+-   https://www.kaggle.com/bminixhofer/deterministic-neural-networks-using-pytorch
 
 ### initalization
 
