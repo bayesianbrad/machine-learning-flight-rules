@@ -100,6 +100,9 @@ _Copied from: https://github.com/k88hudson/git-flight-rules_
       - [cross_entropy vs nll loss for multi-class classification](#cross_entropy-vs-nll-loss-for-multi-class-classification)
       - [binary_cross_entropy vs binary_cross_entropy_with_logits for binary classification tasks](#binary_cross_entropy-vs-binary_cross_entropy_with_logits-for-binary-classification-tasks)
       - [Binary classification vs multi-class classification](#binary-classification-vs-multi-class-classification)
+      - [Pin memory in the dataloader](#pin-memory-in-the-dataloader)
+      - [`model.eval()` vs `torch.no_grad()`](#modeleval-vs-torchno_grad)
+      - [What to use for `num_workers` in the dataloader](#what-to-use-for-num_workers-in-the-dataloader)
     - [Tensorboard](#tensorboard)
     - [Apex](#apex)
     - [Common errors](#common-errors-1)
@@ -447,13 +450,17 @@ tensor(0.1446)
 tensor(0.1446)
 ```
 
--   https://discuss.pytorch.org/t/about-bidirectional-gru-with-seq2seq-example-and-some-modifications/15588/5
--   https://discuss.pytorch.org/t/when-to-set-pin-memory-to-true/19723
--   https://discuss.pytorch.org/t/model-eval-vs-with-torch-no-grad/19615/11
--   https://discuss.pytorch.org/t/guidelines-for-assigning-num-workers-to-dataloader/813
+#### Pin memory in the dataloader
 
--   https://github.com/HarisIqbal88/PlotNeuralNet
--   https://stanford.edu/~shervine/blog/pytorch-how-to-generate-data-parallel
+Set `pin_memory` to `true` in your dataloader to speed up transferring your data from cpu to gpu. Take a look at this for more information (https://discuss.pytorch.org/t/when-to-set-pin-memory-to-true/19723).
+
+#### `model.eval()` vs `torch.no_grad()`
+
+`model.eval()` will switch your dropout and batch norm layers to eval mode, turning off dropout and using the running mean and stddev for the batch norm layers. `torch.no_grad()` will tell pytorch to stop tracking operations, reducing memory usage and speeding up your evaluation loop. To use these properly, run `model.train()` before each training loop, run `model.eval()` before each evaluation loop, and wrap your evaluation loop with `with torch.no_grad():` Take a look at this for more information (https://discuss.pytorch.org/t/model-eval-vs-with-torch-no-grad/19615/11).
+
+#### What to use for `num_workers` in the dataloader
+
+If your gpu utilization fluctuates a lot and generally remains low (< 90%), this might mean that your gpu is waiting for the cpu to finish processing all the elements in your batch and that `num_workers` might be your main bottleneck. `num_workers` in the dataloader is used to tell pytorch how many parallel workers to use to preprocess the data ahead of time. Set `num_workers` to the number of cores that you have in your cpu. This will fully utilize all your cpu cores to minimize the amount of time the gpu spends waiting for the cpu to process the data. If your gpu utilization still remains low, you should get more cpu cores or preprocess the data ahead of time and save it to disk. Take a look at these articles for more information: (https://discuss.pytorch.org/t/guidelines-for-assigning-num-workers-to-dataloader) and (https://stanford.edu/~shervine/blog/pytorch-how-to-generate-data-parallel).
 
 ### Tensorboard
 
@@ -665,9 +672,10 @@ tensor(0.1446)
 
 ### Miscelaneous
 
-    -   https://markus-beuckelmann.de/blog/boosting-numpy-blas.html
-    -   https://github.com/Wookai/paper-tips-and-tricks
-    -   https://github.com/dennybritz/deeplearning-papernotes
+-   https://markus-beuckelmann.de/blog/boosting-numpy-blas.html
+-   https://github.com/Wookai/paper-tips-and-tricks
+-   https://github.com/dennybritz/deeplearning-papernotes
+-   https://github.com/HarisIqbal88/PlotNeuralNet
 
 # ideas
 
