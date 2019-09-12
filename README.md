@@ -104,6 +104,9 @@ _Copied from: https://github.com/k88hudson/git-flight-rules_
       - [`model.eval()` vs `torch.no_grad()`](#modeleval-vs-torchno_grad)
       - [What to use for `num_workers` in the dataloader](#what-to-use-for-num_workers-in-the-dataloader)
     - [Tensorboard](#tensorboard)
+      - [How to use it](#how-to-use-it)
+    - [Use Tensorboard in a kaggle kernel](#use-tensorboard-in-a-kaggle-kernel)
+      - [What do the histograms mean?](#what-do-the-histograms-mean)
     - [Apex](#apex)
     - [Common errors](#common-errors-1)
     - [How to](#how-to)
@@ -111,7 +114,6 @@ _Copied from: https://github.com/k88hudson/git-flight-rules_
   - [Kaggle](#kaggle)
     - [Convert continuous features to categorical features](#convert-continuous-features-to-categorical-features)
     - [ensembling](#ensembling)
-    - [Tensorboard in kernels](#tensorboard-in-kernels)
   - [Computer vision](#computer-vision)
   - [Semantic segmentation](#semantic-segmentation)
   - [NLP](#nlp)
@@ -464,15 +466,30 @@ If your gpu utilization fluctuates a lot and generally remains low (< 90%), this
 
 ### Tensorboard
 
--   https://discuss.pytorch.org/t/check-gradient-flow-in-network/15063/8
--   https://stackoverflow.com/questions/48816873/intermediate-layer-makes-tensorflow-optimizer-to-stop-working
--   https://github.com/lanpa/tensorboardX/issues/345
+Tensorboard is really useful when you want to view your model's training progress in real time. Now that Pytorch 1.1 is out, you can now log metrics directly to tensorboard from Pytorch.
+
+#### How to use it
+
+Follow these instructions for a quickstart (https://pytorch.org/tutorials/intermediate/tensorboard_tutorial.html).
+
+### Use Tensorboard in a kaggle kernel
+
+Just copy this code snippet into a cell at the top of your kernel
+
+```python
+!mkdir logs
+get_ipython().system_raw('tensorboard --logdir ./logs --host 0.0.0.0 --port 6006 &')
+!ssh -o "StrictHostKeyChecking no" -R 80:localhost:6006 serveo.net
+```
+
+I also have another quickstart at my pytorch zoo _link_ repository: (https://github.com/bkkaggle/pytorch_zoo#viewing-training-progress-with-tensorboard-in-a-kaggle-kernel)
+
+#### What do the histograms mean?
+
+Take a look at these discussion posts:
+
 -   https://stackoverflow.com/questions/42315202/understanding-tensorboard-weight-histograms
--   https://discuss.pytorch.org/t/tensorboard-in-pytorch-1-1/44515/2
--   https://discuss.pytorch.org/t/how-to-print-models-parameters-with-its-name-and-requires-grad-value/10778/3
--   https://www.tensorflow.org/guide/tensorboard_histograms
 -   https://stackoverflow.com/questions/38149622/what-is-a-good-explanation-of-how-to-read-the-histogram-feature-of-tensorboard
--   https://stats.stackexchange.com/questions/220491/how-does-one-interpret-histograms-given-by-tensorflow-in-tensorboard
 
 ### Apex
 
@@ -551,12 +568,6 @@ If your gpu utilization fluctuates a lot and generally remains low (< 90%), this
 -   Rely more on shakeup predictions
 -   Random initializations between folds might help diversity
 -   Look at hill climbing to get best coefs
-
-### Tensorboard in kernels
-
--   https://medium.com/datadriveninvestor/monitor-progress-of-your-training-remotely-f9404d71b720
--   https://medium.com/@lesswire1/monitor-progress-of-your-training-remotely-708ee9d2f174
--   https://serveo.net
 
 ## Computer vision
 
