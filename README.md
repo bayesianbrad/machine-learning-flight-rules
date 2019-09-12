@@ -45,95 +45,94 @@ _Copied from: https://github.com/k88hudson/git-flight-rules_
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
-  - [General tips](#general-tips)
-    - [Look at the wrongly classified predictions of your network](#look-at-the-wrongly-classified-predictions-of-your-network)
-    - [Always set the random seed](#always-set-the-random-seed)
-    - [Make a baseline and then increase the size of your model until it overfits](#make-a-baseline-and-then-increase-the-size-of-your-model-until-it-overfits)
-      - [Use a very simplified baseline to test that your code works correctly](#use-a-very-simplified-baseline-to-test-that-your-code-works-correctly)
-      - [Overfit on a single batch](#overfit-on-a-single-batch)
-      - [Be sure that you're data has been correctly processed](#be-sure-that-youre-data-has-been-correctly-processed)
-      - [Simple models -> complex models](#simple-models---complex-models)
-      - [Start with a simple optimizer](#start-with-a-simple-optimizer)
-      - [Change one thing at a time](#change-one-thing-at-a-time)
-    - [Regularize your model](#regularize-your-model)
-      - [Get more data](#get-more-data)
-      - [Data augmentation](#data-augmentation)
-      - [Use a pretrained network](#use-a-pretrained-network)
-      - [Decrease the batch size](#decrease-the-batch-size)
-      - [Use early stopping](#use-early-stopping)
-    - [Squeeze out more performance out of the network](#squeeze-out-more-performance-out-of-the-network)
-      - [Ensemble](#ensemble)
-      - [Use early stopping on the val metric](#use-early-stopping-on-the-val-metric)
-    - [Learn to deal with long iteration times](#learn-to-deal-with-long-iteration-times)
-    - [Keep a log of what you're working on](#keep-a-log-of-what-youre-working-on)
-    - [Try to predict how your code will fail](#try-to-predict-how-your-code-will-fail)
-    - [Resources](#resources)
-  - [Advanced tips](#advanced-tips)
-    - [Basic architectures are sometimes better](#basic-architectures-are-sometimes-better)
-    - [Be sure that code that you copied from Github or Stackoverflow is correct](#be-sure-that-code-that-you-copied-from-github-or-stackoverflow-is-correct)
-    - [Don't excessively tune hyperparameters](#dont-excessively-tune-hyperparameters)
-    - [Set up cyclic learning rates correctly](#set-up-cyclic-learning-rates-correctly)
-    - [Manually init layers](#manually-init-layers)
-    - [Mixed/half precision training](#mixedhalf-precision-training)
-      - [What is the difference between mixed and half precision training?](#what-is-the-difference-between-mixed-and-half-precision-training)
-      - [Resources](#resources-1)
-    - [gradient accumulation](#gradient-accumulation)
-    - [multi gpu/machine training](#multi-gpumachine-training)
-    - [determinism](#determinism)
-    - [initalization](#initalization)
-      - [Initialization methodology](#initialization-methodology)
-      - [Types of intialization](#types-of-intialization)
-        - [Xavier or glorot initialization](#xavier-or-glorot-initialization)
-        - [Kaiming or he initialization](#kaiming-or-he-initialization)
-      - [Gain](#gain)
-      - [Pytorch defaults](#pytorch-defaults)
-      - [Resources](#resources-2)
-    - [Normalization](#normalization)
-      - [Batch norm](#batch-norm)
-        - [You can't use a batch size of 1 with batch norm](#you-cant-use-a-batch-size-of-1-with-batch-norm)
-        - [Be sure to use model.eval() with batch norm](#be-sure-to-use-modeleval-with-batch-norm)
-        - [Resources](#resources-3)
-  - [Common errors](#common-errors)
-  - [Pytorch](#pytorch)
-    - [Losses](#losses)
-      - [cross_entropy vs nll loss for multi-class classification](#cross_entropy-vs-nll-loss-for-multi-class-classification)
-      - [binary_cross_entropy vs binary_cross_entropy_with_logits for binary classification tasks](#binary_cross_entropy-vs-binary_cross_entropy_with_logits-for-binary-classification-tasks)
-      - [Binary classification vs multi-class classification](#binary-classification-vs-multi-class-classification)
-      - [Pin memory in the dataloader](#pin-memory-in-the-dataloader)
-      - [`model.eval()` vs `torch.no_grad()`](#modeleval-vs-torchno_grad)
-      - [What to use for `num_workers` in the dataloader](#what-to-use-for-num_workers-in-the-dataloader)
-    - [Tensorboard](#tensorboard)
-      - [How to use it](#how-to-use-it)
-    - [Use Tensorboard in a kaggle kernel](#use-tensorboard-in-a-kaggle-kernel)
-      - [What do the histograms mean?](#what-do-the-histograms-mean)
-    - [Apex](#apex)
-    - [Common errors](#common-errors-1)
-    - [How to](#how-to)
-    - [Text](#text)
-  - [Kaggle](#kaggle)
-    - [Convert continuous features to categorical features](#convert-continuous-features-to-categorical-features)
-    - [ensembling](#ensembling)
-  - [Computer vision](#computer-vision)
-  - [Semantic segmentation](#semantic-segmentation)
-  - [NLP](#nlp)
-  - [Gradient boosting](#gradient-boosting)
-  - [setup](#setup)
-  - [Build your own library](#build-your-own-library)
-  - [Resources](#resources-4)
-    - [model zoos](#model-zoos)
-    - [Arxiv alternatives](#arxiv-alternatives)
-    - [Demos](#demos)
-    - [Discover](#discover)
-    - [Machine learning as a service](#machine-learning-as-a-service)
-    - [Coreml](#coreml)
-    - [Courses](#courses)
-    - [Miscelaneous](#miscelaneous)
-- [ideas](#ideas)
-- [Contributing](#contributing)
-- [Authors](#authors)
-- [License](#license)
-- [Acknowledgements](#acknowledgements)
+-   [General tips](#general-tips)
+    -   [Look at the wrongly classified predictions of your network](#look-at-the-wrongly-classified-predictions-of-your-network)
+    -   [Always set the random seed](#always-set-the-random-seed)
+    -   [Make a baseline and then increase the size of your model until it overfits](#make-a-baseline-and-then-increase-the-size-of-your-model-until-it-overfits)
+        -   [Use a very simplified baseline to test that your code works correctly](#use-a-very-simplified-baseline-to-test-that-your-code-works-correctly)
+        -   [Overfit on a single batch](#overfit-on-a-single-batch)
+        -   [Be sure that you're data has been correctly processed](#be-sure-that-youre-data-has-been-correctly-processed)
+        -   [Simple models -> complex models](#simple-models---complex-models)
+        -   [Start with a simple optimizer](#start-with-a-simple-optimizer)
+        -   [Change one thing at a time](#change-one-thing-at-a-time)
+    -   [Regularize your model](#regularize-your-model)
+        -   [Get more data](#get-more-data)
+        -   [Data augmentation](#data-augmentation)
+        -   [Use a pretrained network](#use-a-pretrained-network)
+        -   [Decrease the batch size](#decrease-the-batch-size)
+        -   [Use early stopping](#use-early-stopping)
+    -   [Squeeze out more performance out of the network](#squeeze-out-more-performance-out-of-the-network)
+        -   [Ensemble](#ensemble)
+        -   [Use early stopping on the val metric](#use-early-stopping-on-the-val-metric)
+    -   [Learn to deal with long iteration times](#learn-to-deal-with-long-iteration-times)
+    -   [Keep a log of what you're working on](#keep-a-log-of-what-youre-working-on)
+    -   [Try to predict how your code will fail](#try-to-predict-how-your-code-will-fail)
+    -   [Resources](#resources)
+-   [Advanced tips](#advanced-tips)
+    -   [Basic architectures are sometimes better](#basic-architectures-are-sometimes-better)
+    -   [Be sure that code that you copied from Github or Stackoverflow is correct](#be-sure-that-code-that-you-copied-from-github-or-stackoverflow-is-correct)
+    -   [Don't excessively tune hyperparameters](#dont-excessively-tune-hyperparameters)
+    -   [Set up cyclic learning rates correctly](#set-up-cyclic-learning-rates-correctly)
+    -   [Manually init layers](#manually-init-layers)
+    -   [Mixed/half precision training](#mixedhalf-precision-training)
+        -   [What is the difference between mixed and half precision training?](#what-is-the-difference-between-mixed-and-half-precision-training)
+        -   [Resources](#resources-1)
+    -   [gradient accumulation](#gradient-accumulation)
+    -   [multi gpu/machine training](#multi-gpumachine-training)
+    -   [determinism](#determinism)
+    -   [initalization](#initalization)
+        -   [Initialization methodology](#initialization-methodology)
+        -   [Types of intialization](#types-of-intialization)
+            -   [Xavier or glorot initialization](#xavier-or-glorot-initialization)
+            -   [Kaiming or he initialization](#kaiming-or-he-initialization)
+        -   [Gain](#gain)
+        -   [Pytorch defaults](#pytorch-defaults)
+        -   [Resources](#resources-2)
+    -   [Normalization](#normalization)
+        -   [Batch norm](#batch-norm)
+            -   [You can't use a batch size of 1 with batch norm](#you-cant-use-a-batch-size-of-1-with-batch-norm)
+            -   [Be sure to use model.eval() with batch norm](#be-sure-to-use-modeleval-with-batch-norm)
+            -   [Resources](#resources-3)
+-   [Common errors](#common-errors)
+-   [Pytorch](#pytorch)
+    -   [Losses](#losses)
+        -   [cross_entropy vs nll loss for multi-class classification](#cross_entropy-vs-nll-loss-for-multi-class-classification)
+        -   [binary_cross_entropy vs binary_cross_entropy_with_logits for binary classification tasks](#binary_cross_entropy-vs-binary_cross_entropy_with_logits-for-binary-classification-tasks)
+        -   [Binary classification vs multi-class classification](#binary-classification-vs-multi-class-classification)
+        -   [Pin memory in the dataloader](#pin-memory-in-the-dataloader)
+        -   [`model.eval()` vs `torch.no_grad()`](#modeleval-vs-torchno_grad)
+        -   [What to use for `num_workers` in the dataloader](#what-to-use-for-num_workers-in-the-dataloader)
+    -   [Tensorboard](#tensorboard)
+        -   [How to use it](#how-to-use-it)
+    -   [Use Tensorboard in a kaggle kernel](#use-tensorboard-in-a-kaggle-kernel)
+        -   [What do the histograms mean?](#what-do-the-histograms-mean)
+    -   [Apex](#apex)
+    -   [Common errors](#common-errors-1)
+    -   [How to](#how-to)
+    -   [Text](#text)
+-   [Kaggle](#kaggle)
+    -   [Convert continuous features to categorical features](#convert-continuous-features-to-categorical-features)
+    -   [ensembling](#ensembling)
+-   [Computer vision](#computer-vision)
+-   [Semantic segmentation](#semantic-segmentation)
+-   [NLP](#nlp)
+-   [Gradient boosting](#gradient-boosting)
+-   [setup](#setup)
+-   [Build your own library](#build-your-own-library)
+-   [Resources](#resources-4)
+    -   [model zoos](#model-zoos)
+    -   [Arxiv alternatives](#arxiv-alternatives)
+    -   [Demos](#demos)
+    -   [Discover](#discover)
+    -   [Machine learning as a service](#machine-learning-as-a-service)
+    -   [Coreml](#coreml)
+    -   [Courses](#courses)
+    -   [Miscelaneous](#miscelaneous)
+-   [ideas](#ideas)
+-   [Contributing](#contributing)
+-   [Authors](#authors)
+-   [License](#license)
+-   [Acknowledgements](#acknowledgements)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -270,6 +269,10 @@ Nvidia's Volta and Turing GPUs contain tensor cores that can do fast fp16 matrix
 Mixed precision solves these problems by keeping a master copy of the model's parameters in 32 bit floats. The inputs and the model's parameters are still cast to fp16, but after the backwards pass, the gradients are copied to the master copy and cast to fp32. The parameters are updated in fp32 to prevent gradients from underflowing, and the new, updated master copy's parameters are cast to fp16 and copied to the original fp16 model. Nvidia's apex library recommends using mixed precision in a different way by casting inputs to tensor core-friendly operations to fp16 and keeping other operations in fp32. Both of these mixed precision approaches have an overhead compared to half precision training, but are faster and use less vram than fp32 training.
 
 _example_
+
+### Apex won't install on GCP's deep learning vm
+
+This is a known issue with apex, take a look at (https://github.com/NVIDIA/apex/issues/259) for some possible solutions.
 
 #### Resources
 
@@ -491,28 +494,60 @@ Take a look at these discussion posts:
 -   https://stackoverflow.com/questions/42315202/understanding-tensorboard-weight-histograms
 -   https://stackoverflow.com/questions/38149622/what-is-a-good-explanation-of-how-to-read-the-histogram-feature-of-tensorboard
 
-### Apex
-
--   https://github.com/NVIDIA/apex/issues/259
-
 ### Common errors
 
--   https://discuss.pytorch.org/t/unable-to-write-to-file-torch-18692-1954506624/9990
--   https://discuss.pytorch.org/t/torch-from-numpy-not-support-negative-strides/3663
--   https://discuss.pytorch.org/t/encounter-the-runtimeerror-one-of-the-variables-needed-for-gradient-computation-has-been-modified-by-an-inplace-operation/836
--   https://discuss.pytorch.org/t/solved-creating-mtgp-constants-failed-error/15084
--   https://github.com/pytorch/pytorch/issues/4534
+#### RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation
+
+In place operations and operations on slices of tensors can cause problems with Pytorch's autograd. To fix this, convert your inplace operation, `x[:, 0, :] += 1`, to a non inplace operation, `x[:, 0, :] = x[:, 0, :].clone() + 1`, and use `.clone()` to avoid problems with operations on tensor slices. Take a look at (https://discuss.pytorch.org/t/encounter-the-runtimeerror-one-of-the-variables-needed-for-gradient-computation-has-been-modified-by-an-inplace-operation/836) for more information.
+
+#### Creating MTGP constants failed error
+
+This error happens when "using an embedding layer and passing out of range indexes (indexes > num_embeddings)" from (https://discuss.pytorch.org/t/solved-creating-mtgp-constants-failed-error/15084/4). For more information, take a look at (https://discuss.pytorch.org/t/solved-creating-mtgp-constants-failed-error/15084).
+
+#### ValueError: Expected more than 1 value per channel when training
+
+This error happens when you're using a batch size of 1 while training with batch norm. Batch norm expects to have a batch size of at least 2. For more information, take a look at (https://github.com/pytorch/pytorch/issues/4534)
 
 ### How to
 
--   https://discuss.pytorch.org/t/how-can-i-replace-an-intermediate-layer-in-a-pre-trained-network/3586
--   https://discuss.pytorch.org/t/concatenation-of-the-hidden-states-produced-by-a-bidirectional-lstm/3686
--   https://discuss.pytorch.org/t/global-max-pooling/1345
--   https://discuss.pytorch.org/t/how-can-we-release-gpu-memory-cache/14530
--   https://discuss.pytorch.org/t/proper-way-to-do-gradient-clipping/191
--   https://towardsdatascience.com/transfer-learning-using-pytorch-part-2-9c5b18e15551
+#### How to implement gradient clipping
 
-### Text
+Here's the code for gradient clipping:
+
+```python
+torch.nn.utils.clip_grad_norm(model.parameters(), value)
+```
+
+If you want to read more about gradient clipping in pytorch, take a look at (https://discuss.pytorch.org/t/proper-way-to-do-gradient-clipping/191).
+
+#### How to implement global max/avg pooling
+
+Follow the instructions from (https://discuss.pytorch.org/t/global-max-pooling/1345/2)
+
+#### How to release gpu memory
+
+There is no simple way to do this, but you can release as much memory as you can by running `torch.cuda.empty_cache()`. Take a look at (https://discuss.pytorch.org/t/how-can-we-release-gpu-memory-cache/14530) for more information.
+
+#### How to concatenate hidden states of a bidirectional lstm
+
+Follow the instructions from (https://discuss.pytorch.org/t/concatenation-of-the-hidden-states-produced-by-a-bidirectional-lstm/3686/2).
+
+### Torchtext
+
+Torchtext is Pytorch's official NLP library, some resources to learn how to use it are:
+
+- https://torchtext.readthedocs.io/en/latest/index.html
+- http://anie.me/On-Torchtext/
+- http://mlexplained.com/2018/02/08/a-comprehensive-tutorial-to-torchtext/
+- http://mlexplained.com/2018/02/15/language-modeling-tutorial-in-torchtext-practical-torchtext-part-2/
+- https://towardsdatascience.com/use-torchtext-to-load-nlp-datasets-part-i-5da6f1c89d84
+- https://towardsdatascience.com/use-torchtext-to-load-nlp-datasets-part-ii-f146c8b9a496
+
+#### Serializing datasets
+
+####
+
+
 
 -   https://discuss.pytorch.org/t/aligning-torchtext-vocab-index-to-loaded-embedding-pre-trained-weights/20878
 -   http://anie.me/On-Torchtext/
