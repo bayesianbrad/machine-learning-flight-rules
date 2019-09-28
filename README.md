@@ -32,7 +32,7 @@
     <a href='#acknowledgements'>Acknowledgements</a>
 </p>
 
-# What are "flight rules"?
+## What are "flight rules"?
 
 _Copied from: https://github.com/k88hudson/git-flight-rules_
 
@@ -42,97 +42,116 @@ _Copied from: https://github.com/k88hudson/git-flight-rules_
 
 &mdash; Chris Hadfield, _An Astronaut's Guide to Life_.
 
+## Table Of Contents
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
--   [General tips](#general-tips)
-    -   [Look at the wrongly classified predictions of your network](#look-at-the-wrongly-classified-predictions-of-your-network)
-    -   [Always set the random seed](#always-set-the-random-seed)
-    -   [Make a baseline and then increase the size of your model until it overfits](#make-a-baseline-and-then-increase-the-size-of-your-model-until-it-overfits)
-        -   [Use a very simplified baseline to test that your code works correctly](#use-a-very-simplified-baseline-to-test-that-your-code-works-correctly)
-        -   [Overfit on a single batch](#overfit-on-a-single-batch)
-        -   [Be sure that you're data has been correctly processed](#be-sure-that-youre-data-has-been-correctly-processed)
-        -   [Simple models -> complex models](#simple-models---complex-models)
-        -   [Start with a simple optimizer](#start-with-a-simple-optimizer)
-        -   [Change one thing at a time](#change-one-thing-at-a-time)
-    -   [Regularize your model](#regularize-your-model)
-        -   [Get more data](#get-more-data)
-        -   [Data augmentation](#data-augmentation)
-        -   [Use a pretrained network](#use-a-pretrained-network)
-        -   [Decrease the batch size](#decrease-the-batch-size)
-        -   [Use early stopping](#use-early-stopping)
-    -   [Squeeze out more performance out of the network](#squeeze-out-more-performance-out-of-the-network)
-        -   [Ensemble](#ensemble)
-        -   [Use early stopping on the val metric](#use-early-stopping-on-the-val-metric)
-    -   [Learn to deal with long iteration times](#learn-to-deal-with-long-iteration-times)
-    -   [Keep a log of what you're working on](#keep-a-log-of-what-youre-working-on)
-    -   [Try to predict how your code will fail](#try-to-predict-how-your-code-will-fail)
-    -   [Resources](#resources)
--   [Advanced tips](#advanced-tips)
-    -   [Basic architectures are sometimes better](#basic-architectures-are-sometimes-better)
-    -   [Be sure that code that you copied from Github or Stackoverflow is correct](#be-sure-that-code-that-you-copied-from-github-or-stackoverflow-is-correct)
-    -   [Don't excessively tune hyperparameters](#dont-excessively-tune-hyperparameters)
-    -   [Set up cyclic learning rates correctly](#set-up-cyclic-learning-rates-correctly)
-    -   [Manually init layers](#manually-init-layers)
-    -   [Mixed/half precision training](#mixedhalf-precision-training)
-        -   [What is the difference between mixed and half precision training?](#what-is-the-difference-between-mixed-and-half-precision-training)
-        -   [Resources](#resources-1)
-    -   [gradient accumulation](#gradient-accumulation)
-    -   [multi gpu/machine training](#multi-gpumachine-training)
-    -   [determinism](#determinism)
-    -   [initalization](#initalization)
-        -   [Initialization methodology](#initialization-methodology)
-        -   [Types of intialization](#types-of-intialization)
-            -   [Xavier or glorot initialization](#xavier-or-glorot-initialization)
-            -   [Kaiming or he initialization](#kaiming-or-he-initialization)
-        -   [Gain](#gain)
-        -   [Pytorch defaults](#pytorch-defaults)
-        -   [Resources](#resources-2)
-    -   [Normalization](#normalization)
-        -   [Batch norm](#batch-norm)
-            -   [You can't use a batch size of 1 with batch norm](#you-cant-use-a-batch-size-of-1-with-batch-norm)
-            -   [Be sure to use model.eval() with batch norm](#be-sure-to-use-modeleval-with-batch-norm)
-            -   [Resources](#resources-3)
--   [Common errors](#common-errors)
--   [Pytorch](#pytorch)
-    -   [Losses](#losses)
-        -   [cross_entropy vs nll loss for multi-class classification](#cross_entropy-vs-nll-loss-for-multi-class-classification)
-        -   [binary_cross_entropy vs binary_cross_entropy_with_logits for binary classification tasks](#binary_cross_entropy-vs-binary_cross_entropy_with_logits-for-binary-classification-tasks)
-        -   [Binary classification vs multi-class classification](#binary-classification-vs-multi-class-classification)
-        -   [Pin memory in the dataloader](#pin-memory-in-the-dataloader)
-        -   [`model.eval()` vs `torch.no_grad()`](#modeleval-vs-torchno_grad)
-        -   [What to use for `num_workers` in the dataloader](#what-to-use-for-num_workers-in-the-dataloader)
-    -   [Tensorboard](#tensorboard)
-        -   [How to use it](#how-to-use-it)
-    -   [Use Tensorboard in a kaggle kernel](#use-tensorboard-in-a-kaggle-kernel)
-        -   [What do the histograms mean?](#what-do-the-histograms-mean)
-    -   [Apex](#apex)
-    -   [Common errors](#common-errors-1)
-    -   [How to](#how-to)
-    -   [Text](#text)
--   [Kaggle](#kaggle)
-    -   [Convert continuous features to categorical features](#convert-continuous-features-to-categorical-features)
-    -   [ensembling](#ensembling)
--   [Computer vision](#computer-vision)
--   [Semantic segmentation](#semantic-segmentation)
--   [NLP](#nlp)
--   [Gradient boosting](#gradient-boosting)
--   [setup](#setup)
--   [Build your own library](#build-your-own-library)
--   [Resources](#resources-4)
-    -   [model zoos](#model-zoos)
-    -   [Arxiv alternatives](#arxiv-alternatives)
-    -   [Demos](#demos)
-    -   [Discover](#discover)
-    -   [Machine learning as a service](#machine-learning-as-a-service)
-    -   [Coreml](#coreml)
-    -   [Courses](#courses)
-    -   [Miscelaneous](#miscelaneous)
--   [ideas](#ideas)
--   [Contributing](#contributing)
--   [Authors](#authors)
--   [License](#license)
--   [Acknowledgements](#acknowledgements)
+
+  - [General tips](#general-tips)
+    - [Look at the wrongly classified predictions of your network](#look-at-the-wrongly-classified-predictions-of-your-network)
+    - [Always set the random seed](#always-set-the-random-seed)
+    - [Make a baseline and then increase the size of your model until it overfits](#make-a-baseline-and-then-increase-the-size-of-your-model-until-it-overfits)
+      - [Use a very simplified baseline to test that your code works correctly](#use-a-very-simplified-baseline-to-test-that-your-code-works-correctly)
+      - [Overfit on a single batch](#overfit-on-a-single-batch)
+      - [Be sure that you're data has been correctly processed](#be-sure-that-youre-data-has-been-correctly-processed)
+      - [Simple models -> complex models](#simple-models---complex-models)
+      - [Start with a simple optimizer](#start-with-a-simple-optimizer)
+      - [Change one thing at a time](#change-one-thing-at-a-time)
+    - [Regularize your model](#regularize-your-model)
+      - [Get more data](#get-more-data)
+      - [Data augmentation](#data-augmentation)
+      - [Use a pretrained network](#use-a-pretrained-network)
+      - [Decrease the batch size](#decrease-the-batch-size)
+      - [Use early stopping](#use-early-stopping)
+    - [Squeeze out more performance out of the network](#squeeze-out-more-performance-out-of-the-network)
+      - [Ensemble](#ensemble)
+      - [Use early stopping on the val metric](#use-early-stopping-on-the-val-metric)
+    - [Learn to deal with long iteration times](#learn-to-deal-with-long-iteration-times)
+    - [Keep a log of what you're working on](#keep-a-log-of-what-youre-working-on)
+    - [Try to predict how your code will fail](#try-to-predict-how-your-code-will-fail)
+    - [Resources](#resources)
+  - [Advanced tips](#advanced-tips)
+    - [Basic architectures are sometimes better](#basic-architectures-are-sometimes-better)
+    - [Be sure that code that you copied from Github or Stackoverflow is correct](#be-sure-that-code-that-you-copied-from-github-or-stackoverflow-is-correct)
+    - [Don't excessively tune hyperparameters](#dont-excessively-tune-hyperparameters)
+    - [Set up cyclic learning rates correctly](#set-up-cyclic-learning-rates-correctly)
+    - [Manually init layers](#manually-init-layers)
+    - [Mixed/half precision training](#mixedhalf-precision-training)
+      - [What is the difference between mixed and half precision training?](#what-is-the-difference-between-mixed-and-half-precision-training)
+    - [Apex won't install on GCP's deep learning vm](#apex-wont-install-on-gcps-deep-learning-vm)
+      - [Resources](#resources-1)
+    - [gradient accumulation](#gradient-accumulation)
+    - [multi gpu/machine training](#multi-gpumachine-training)
+    - [determinism](#determinism)
+    - [initalization](#initalization)
+      - [Initialization methodology](#initialization-methodology)
+      - [Types of intialization](#types-of-intialization)
+        - [Xavier or glorot initialization](#xavier-or-glorot-initialization)
+        - [Kaiming or he initialization](#kaiming-or-he-initialization)
+      - [Gain](#gain)
+      - [Pytorch defaults](#pytorch-defaults)
+      - [Resources](#resources-2)
+    - [Normalization](#normalization)
+      - [Batch norm](#batch-norm)
+        - [You can't use a batch size of 1 with batch norm](#you-cant-use-a-batch-size-of-1-with-batch-norm)
+        - [Be sure to use model.eval() with batch norm](#be-sure-to-use-modeleval-with-batch-norm)
+        - [Resources](#resources-3)
+  - [Common errors](#common-errors)
+  - [Pytorch](#pytorch)
+    - [Losses](#losses)
+      - [cross_entropy vs nll loss for multi-class classification](#cross_entropy-vs-nll-loss-for-multi-class-classification)
+      - [binary_cross_entropy vs binary_cross_entropy_with_logits for binary classification tasks](#binary_cross_entropy-vs-binary_cross_entropy_with_logits-for-binary-classification-tasks)
+      - [Binary classification vs multi-class classification](#binary-classification-vs-multi-class-classification)
+      - [Pin memory in the dataloader](#pin-memory-in-the-dataloader)
+      - [`model.eval()` vs `torch.no_grad()`](#modeleval-vs-torchno_grad)
+      - [What to use for `num_workers` in the dataloader](#what-to-use-for-num_workers-in-the-dataloader)
+    - [Tensorboard](#tensorboard)
+      - [How to use it](#how-to-use-it)
+    - [Use Tensorboard in a kaggle kernel](#use-tensorboard-in-a-kaggle-kernel)
+      - [What do the histograms mean?](#what-do-the-histograms-mean)
+    - [Common errors](#common-errors-1)
+      - [RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation](#runtimeerror-one-of-the-variables-needed-for-gradient-computation-has-been-modified-by-an-inplace-operation)
+      - [Creating MTGP constants failed error](#creating-mtgp-constants-failed-error)
+      - [ValueError: Expected more than 1 value per channel when training](#valueerror-expected-more-than-1-value-per-channel-when-training)
+    - [How to](#how-to)
+      - [How to implement gradient clipping](#how-to-implement-gradient-clipping)
+      - [How to implement global max/avg pooling](#how-to-implement-global-maxavg-pooling)
+      - [How to release gpu memory](#how-to-release-gpu-memory)
+      - [How to concatenate hidden states of a bidirectional lstm](#how-to-concatenate-hidden-states-of-a-bidirectional-lstm)
+    - [Torchtext](#torchtext)
+      - [Sort batches by length](#sort-batches-by-length)
+      - [Pretrained embeddings](#pretrained-embeddings)
+      - [Serializing datasets](#serializing-datasets)
+  - [Kaggle](#kaggle)
+    - [Tips](#tips)
+    - [Tricks](#tricks)
+      - [Thresholding](#thresholding)
+      - [Shakeup](#shakeup)
+    - [Encoding categorical features](#encoding-categorical-features)
+    - [Optimizing code](#optimizing-code)
+    - [Data Leaks](#data-leaks)
+    - [Tools](#tools)
+    - [ensembling](#ensembling)
+  - [Semantic segmentation](#semantic-segmentation)
+  - [NLP](#nlp)
+  - [Gradient boosting](#gradient-boosting)
+  - [setup](#setup)
+  - [Build your own library](#build-your-own-library)
+  - [Resources](#resources-4)
+    - [model zoos](#model-zoos)
+    - [Arxiv alternatives](#arxiv-alternatives)
+    - [Demos](#demos)
+    - [Discover](#discover)
+    - [Machine learning as a service](#machine-learning-as-a-service)
+    - [Coreml](#coreml)
+    - [Courses](#courses)
+    - [Miscelaneous](#miscelaneous)
+- [ideas](#ideas)
+- [Contributing](#contributing)
+- [Authors](#authors)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -534,65 +553,106 @@ Follow the instructions from (https://discuss.pytorch.org/t/concatenation-of-the
 
 ### Torchtext
 
-Torchtext is Pytorch's official NLP library, some resources to learn how to use it are:
+Torchtext is Pytorch's official NLP library, The library's official [docs](https://torchtext.readthedocs.io/en/latest/index.html) are the best way to get started with the library, but are a bit limited and there are some blog posts that help you get a better sense of how to use the library:
 
-- https://torchtext.readthedocs.io/en/latest/index.html
-- http://anie.me/On-Torchtext/
-- http://mlexplained.com/2018/02/08/a-comprehensive-tutorial-to-torchtext/
-- http://mlexplained.com/2018/02/15/language-modeling-tutorial-in-torchtext-practical-torchtext-part-2/
-- https://towardsdatascience.com/use-torchtext-to-load-nlp-datasets-part-i-5da6f1c89d84
-- https://towardsdatascience.com/use-torchtext-to-load-nlp-datasets-part-ii-f146c8b9a496
+-   https://pytorch.org/tutorials/beginner/torchtext_translation_tutorial.html
+-   https://pytorch.org/tutorials/beginner/text_sentiment_ngrams_tutorial.html
+-   https://pytorch.org/tutorials/beginner/transformer_tutorial.html
+-   http://anie.me/On-Torchtext/
+-   http://mlexplained.com/2018/02/08/a-comprehensive-tutorial-to-torchtext/
+-   http://mlexplained.com/2018/02/15/language-modeling-tutorial-in-torchtext-practical-torchtext-part-2/
+-   https://towardsdatascience.com/use-torchtext-to-load-nlp-datasets-part-i-5da6f1c89d84
+-   https://towardsdatascience.com/use-torchtext-to-load-nlp-datasets-part-ii-f146c8b9a496
+-   https://pytorch.org/tutorials/beginner/torchtext_translation_tutorial.html
+
+#### Sort batches by length
+
+Your recurrent models will train best if all the examples in a batch have similar lengths. Since all the examples in a batch are padded with zeros to the length of the longest example, grouping examples with identical or similar lengths will make your model more efficient and waste less of the GPU's memory. Use the iterator's `sort_key` attribute to tell it to group examples of similar lengths into each batch. If you're using `pack_padded_sequence`, set `sort_within_batch` to `True` since `pack_padded_sequence` expects examples in a batch to be in ascending order. Take a look at [this](https://github.com/pytorch/text/issues/303) for more information.
+
+-   https://github.com/pytorch/text/issues/303
+
+#### Pretrained embeddings
+
+If you want to use a pretrained embedding like word2vec or glove, you will have to load in the pretrained vectors and update the field's vectors.
+
+```
+# Load in the vectors
+vectors = torchtext.vocab.Vectors('/path/to/vectors')
+
+# Create the text field
+text_field = data.Field(tokenize=tokenizer, lower=True, batch_first=True, include_lengths=True)
+
+# Built the vocab for the field using the train dataset
+text_field.build_vocab(train_dataset)
+
+# Set the vectors of the field to be the pretrained vectors
+text_field.vocab.set_vectors(vectors.stoi, vectors.vectors, vectors.dim)
+```
+
+Take a look at [this](https://discuss.pytorch.org/t/aligning-torchtext-vocab-index-to-loaded-embedding-pre-trained-weights/20878) for more information.
 
 #### Serializing datasets
 
-####
-
-
-
--   https://discuss.pytorch.org/t/aligning-torchtext-vocab-index-to-loaded-embedding-pre-trained-weights/20878
--   http://anie.me/On-Torchtext/
--   http://mlexplained.com/2018/02/15/language-modeling-tutorial-in-torchtext-practical-torchtext-part-2/
--   http://mlexplained.com/2018/02/08/a-comprehensive-tutorial-to-torchtext/
--   https://github.com/pytorch/text/issues/303
--   https://github.com/pytorch/text/issues/140
--   https://towardsdatascience.com/use-torchtext-to-load-nlp-datasets-part-ii-f146c8b9a496
--   https://towardsdatascience.com/use-torchtext-to-load-nlp-datasets-part-i-5da6f1c89d84
+If you're working with large datasets that take time to load and process, being able to serialize and save processed datasets to disk is a really nice feature. Unfortunately, this feature is [still](https://github.com/pytorch/text/issues/140) a work in progress (the issue was created in 2017, and there doesn't seem to be that much work being done on torchtext as of late 2019), so the only way to do this at the moment is to follow [this](https://towardsdatascience.com/use-torchtext-to-load-nlp-datasets-part-ii-f146c8b9a496) article.
 
 ## Kaggle
 
-### Convert continuous features to categorical features
+Here are some of tips and tricks I picked up while participating in kaggle competitions.
 
--   Use multiprocessing
+### Tips
+
 -   optimize for the metric
--   if you don't want to use loss weighting, remove negative samples from the dataset (https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/discussion/ 97484)
 -   Something that works for someone might not help you
--   https://www.kaggle.com/raddar/towards-de-anonymizing-the-data-some-insights
--   https://www.kaggle.com/c/LANL-Earthquake-Prediction/discussion/80250
--   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/80368
--   https://github.com/guoday/ctrNet-tool
--   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/79045
--   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/76668
--   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/78253
--   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/75246
--   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/75246
--   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/75217
--   https://www.kaggle.com/c/talkingdata-adtracking-fraud-detection/discussion/56497#331685
--   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/75149
--   https://github.com/goldentom42/py_ml_utils
--   https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/discussion/87756#latest-521985
--   https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/discussion/87586#latest-519542
+-   https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/discussion/87756
+-   https://www.kaggle.com/c/tgs-salt-identification-challenge/discussion/65226
+-   https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/79556
+
+### Tricks
+
+-   if you don't want to use loss weighting, remove negative samples from the dataset (https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/discussion/ 97484)
 -   https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/72040
 -   https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/79720
 -   https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/79911
--   https://gist.github.com/ceshine/dddbe932b00c8d281ed61ff82dd77593
+-   https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/72770
+-   https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/77406
+-   https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/discussion/94779#547596
+
+#### Thresholding
+
 -   https://www.kaggle.com/c/tgs-salt-identification-challenge/discussion/66465
--   https://www.kaggle.com/c/tgs-salt-identification-challenge/discussion/66660
--   https://www.kaggle.com/c/tgs-salt-identification-challenge/discussion/67209
+
+#### Shakeup
+
 -   https://www.kaggle.com/c/tgs-salt-identification-challenge/discussion/67090
--   https://becominghuman.ai/investigating-focal-and-dice-loss-for-the-kaggle-2018-data-science-bowl-65fb9af4f36c
--   https://www.kaggle.com/c/tgs-salt-identification-challenge/discussion/65226
 -   https://www.kaggle.com/c/planet-understanding-the-amazon-from-space/discussion/36809
--   https://www.kaggle.com/cpmpml/raddar-magic-explained-a-bit
+-   https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/75821
+
+### Encoding categorical features
+
+-   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/79045
+-   https://www.kaggle.com/vprokopev/mean-likelihood-encodings-a-comprehensive-study
+-   https://www.kaggle.com/tnarik/likelihood-encoding-of-categorical-features
+-   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/76668
+
+### Optimizing code
+
+-   Use multiprocessing
+-   https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/discussion/87586
+
+### Data Leaks
+
+-   https://www.kaggle.com/raddar/towards-de-anonymizing-the-data-some-insights
+-   https://www.kaggle.com/cpmpml/raddar-magic-explained-a-bit/
+
+### Tools
+
+-   https://github.com/guoday/ctrNet-tool
+-   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/75246
+-   https://www.kaggle.com/c/avazu-ctr-prediction/discussion/10927
+-   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/75149
+-   https://www.kaggle.com/scirpus/microsoft-libffm-munger
+-   https://www.kaggle.com/c/talkingdata-adtracking-fraud-detection/discussion/56497#331685
+-   https://github.com/goldentom42/py_ml_utils
 
 ### ensembling
 
@@ -603,14 +663,15 @@ Torchtext is Pytorch's official NLP library, some resources to learn how to use 
 -   Rely more on shakeup predictions
 -   Random initializations between folds might help diversity
 -   Look at hill climbing to get best coefs
-
-## Computer vision
+-   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/80368
+-   https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge/discussion/51058
 
 ## Semantic segmentation
 
 -   http://blog.qure.ai/notes/semantic-segmentation-deep-learning-review
 -   https://tuatini.me/practical-image-segmentation-with-unet/
 -   https://www.jeremyjordan.me/semantic-segmentation/#loss
+-   https://becominghuman.ai/investigating-focal-and-dice-loss-for-the-kaggle-2018-data-science-bowl-65fb9af4f36c
 
 ## NLP
 
@@ -653,6 +714,7 @@ Torchtext is Pytorch's official NLP library, some resources to learn how to use 
 -   https://xgboost.readthedocs.io/en/latest/tutorials/model.html
 -   http://mlexplained.com/2018/01/05/lightgbm-and-xgboost-explained/
 -   https://github.com/aksnzhy/xlearn
+-   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/78253
 
 ## setup
 
@@ -715,6 +777,8 @@ Torchtext is Pytorch's official NLP library, some resources to learn how to use 
 ### Courses
 
 -   https://fast.ai
+-   https://www.coursera.org/learn/competitive-data-science
+-   deeplearning.ai
 
 ### Miscelaneous
 
