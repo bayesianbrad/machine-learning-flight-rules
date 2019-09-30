@@ -175,7 +175,6 @@ _Copied from: https://github.com/k88hudson/git-flight-rules_
     -   [Coreml](#coreml)
     -   [Courses](#courses)
     -   [Miscelaneous](#miscelaneous)
--   [ideas](#ideas)
 -   [Contributing](#contributing)
 -   [Authors](#authors)
 -   [License](#license)
@@ -875,10 +874,6 @@ I recently built my own machine learning [library](https://github.com/bkkaggle/L
 -   https://github.com/Wookai/paper-tips-and-tricks
 -   https://github.com/dennybritz/deeplearning-papernotes
 -   https://github.com/HarisIqbal88/PlotNeuralNet
-
-# ideas
-
--   logo
 
 # Contributing
 
