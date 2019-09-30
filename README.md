@@ -42,6 +42,8 @@ _Copied from: https://github.com/k88hudson/git-flight-rules_
 
 &mdash; Chris Hadfield, _An Astronaut's Guide to Life_.
 
+## Table Of Contents
+
 <details>
   <summary>Table Of Contents</summary>
 
