@@ -47,117 +47,142 @@ _Copied from: https://github.com/k88hudson/git-flight-rules_
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
-  - [General tips](#general-tips)
-    - [Look at the wrongly classified predictions of your network](#look-at-the-wrongly-classified-predictions-of-your-network)
-    - [Always set the random seed](#always-set-the-random-seed)
-    - [Make a baseline and then increase the size of your model until it overfits](#make-a-baseline-and-then-increase-the-size-of-your-model-until-it-overfits)
-      - [Use a very simplified baseline to test that your code works correctly](#use-a-very-simplified-baseline-to-test-that-your-code-works-correctly)
-      - [Overfit on a single batch](#overfit-on-a-single-batch)
-      - [Be sure that you're data has been correctly processed](#be-sure-that-youre-data-has-been-correctly-processed)
-      - [Simple models -> complex models](#simple-models---complex-models)
-      - [Start with a simple optimizer](#start-with-a-simple-optimizer)
-      - [Change one thing at a time](#change-one-thing-at-a-time)
-    - [Regularize your model](#regularize-your-model)
-      - [Get more data](#get-more-data)
-      - [Data augmentation](#data-augmentation)
-      - [Use a pretrained network](#use-a-pretrained-network)
-      - [Decrease the batch size](#decrease-the-batch-size)
-      - [Use early stopping](#use-early-stopping)
-    - [Squeeze out more performance out of the network](#squeeze-out-more-performance-out-of-the-network)
-      - [Ensemble](#ensemble)
-      - [Use early stopping on the val metric](#use-early-stopping-on-the-val-metric)
-    - [Learn to deal with long iteration times](#learn-to-deal-with-long-iteration-times)
-    - [Keep a log of what you're working on](#keep-a-log-of-what-youre-working-on)
-    - [Try to predict how your code will fail](#try-to-predict-how-your-code-will-fail)
-    - [Resources](#resources)
-  - [Advanced tips](#advanced-tips)
-    - [Basic architectures are sometimes better](#basic-architectures-are-sometimes-better)
-    - [Be sure that code that you copied from Github or Stackoverflow is correct](#be-sure-that-code-that-you-copied-from-github-or-stackoverflow-is-correct)
-    - [Don't excessively tune hyperparameters](#dont-excessively-tune-hyperparameters)
-    - [Set up cyclic learning rates correctly](#set-up-cyclic-learning-rates-correctly)
-    - [Manually init layers](#manually-init-layers)
-    - [Mixed/half precision training](#mixedhalf-precision-training)
-      - [What is the difference between mixed and half precision training?](#what-is-the-difference-between-mixed-and-half-precision-training)
-    - [Apex won't install on GCP's deep learning vm](#apex-wont-install-on-gcps-deep-learning-vm)
-      - [Resources](#resources-1)
-    - [gradient accumulation](#gradient-accumulation)
-    - [multi gpu/machine training](#multi-gpumachine-training)
-    - [determinism](#determinism)
-    - [initalization](#initalization)
-      - [Initialization methodology](#initialization-methodology)
-      - [Types of intialization](#types-of-intialization)
-        - [Xavier or glorot initialization](#xavier-or-glorot-initialization)
-        - [Kaiming or he initialization](#kaiming-or-he-initialization)
-      - [Gain](#gain)
-      - [Pytorch defaults](#pytorch-defaults)
-      - [Resources](#resources-2)
-    - [Normalization](#normalization)
-      - [Batch norm](#batch-norm)
-        - [You can't use a batch size of 1 with batch norm](#you-cant-use-a-batch-size-of-1-with-batch-norm)
-        - [Be sure to use model.eval() with batch norm](#be-sure-to-use-modeleval-with-batch-norm)
-        - [Resources](#resources-3)
-  - [Common errors](#common-errors)
-  - [Pytorch](#pytorch)
-    - [Losses](#losses)
-      - [cross_entropy vs nll loss for multi-class classification](#cross_entropy-vs-nll-loss-for-multi-class-classification)
-      - [binary_cross_entropy vs binary_cross_entropy_with_logits for binary classification tasks](#binary_cross_entropy-vs-binary_cross_entropy_with_logits-for-binary-classification-tasks)
-      - [Binary classification vs multi-class classification](#binary-classification-vs-multi-class-classification)
-      - [Pin memory in the dataloader](#pin-memory-in-the-dataloader)
-      - [`model.eval()` vs `torch.no_grad()`](#modeleval-vs-torchno_grad)
-      - [What to use for `num_workers` in the dataloader](#what-to-use-for-num_workers-in-the-dataloader)
-    - [Tensorboard](#tensorboard)
-      - [How to use it](#how-to-use-it)
-    - [Use Tensorboard in a kaggle kernel](#use-tensorboard-in-a-kaggle-kernel)
-      - [What do the histograms mean?](#what-do-the-histograms-mean)
-    - [Common errors](#common-errors-1)
-      - [RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation](#runtimeerror-one-of-the-variables-needed-for-gradient-computation-has-been-modified-by-an-inplace-operation)
-      - [Creating MTGP constants failed error](#creating-mtgp-constants-failed-error)
-      - [ValueError: Expected more than 1 value per channel when training](#valueerror-expected-more-than-1-value-per-channel-when-training)
-    - [How to](#how-to)
-      - [How to implement gradient clipping](#how-to-implement-gradient-clipping)
-      - [How to implement global max/avg pooling](#how-to-implement-global-maxavg-pooling)
-      - [How to release gpu memory](#how-to-release-gpu-memory)
-      - [How to concatenate hidden states of a bidirectional lstm](#how-to-concatenate-hidden-states-of-a-bidirectional-lstm)
-    - [Torchtext](#torchtext)
-      - [Sort batches by length](#sort-batches-by-length)
-      - [Pretrained embeddings](#pretrained-embeddings)
-      - [Serializing datasets](#serializing-datasets)
-  - [Kaggle](#kaggle)
-    - [Tips](#tips)
-    - [Tricks](#tricks)
-      - [Thresholding](#thresholding)
-      - [Shakeup](#shakeup)
-    - [Encoding categorical features](#encoding-categorical-features)
-    - [Optimizing code](#optimizing-code)
-    - [Data Leaks](#data-leaks)
-    - [Tools](#tools)
-    - [ensembling](#ensembling)
-  - [Semantic segmentation](#semantic-segmentation)
-  - [NLP](#nlp)
-  - [Gradient boosting](#gradient-boosting)
-  - [setup](#setup)
-  - [Build your own library](#build-your-own-library)
-  - [Resources](#resources-4)
-    - [model zoos](#model-zoos)
-    - [Arxiv alternatives](#arxiv-alternatives)
-    - [Demos](#demos)
-    - [Discover](#discover)
-    - [Machine learning as a service](#machine-learning-as-a-service)
-    - [Coreml](#coreml)
-    - [Courses](#courses)
-    - [Miscelaneous](#miscelaneous)
-- [ideas](#ideas)
-- [Contributing](#contributing)
-- [Authors](#authors)
-- [License](#license)
-- [Acknowledgements](#acknowledgements)
+-   [General tips](#general-tips)
+    -   [Look at the wrongly classified predictions of your network](#look-at-the-wrongly-classified-predictions-of-your-network)
+    -   [Always set the random seed](#always-set-the-random-seed)
+    -   [Make a baseline and then increase the size of your model until it overfits](#make-a-baseline-and-then-increase-the-size-of-your-model-until-it-overfits)
+        -   [Use a very simplified baseline to test that your code works correctly](#use-a-very-simplified-baseline-to-test-that-your-code-works-correctly)
+        -   [Overfit on a single batch](#overfit-on-a-single-batch)
+        -   [Be sure that you're data has been correctly processed](#be-sure-that-youre-data-has-been-correctly-processed)
+        -   [Simple models -> complex models](#simple-models---complex-models)
+        -   [Start with a simple optimizer](#start-with-a-simple-optimizer)
+        -   [Change one thing at a time](#change-one-thing-at-a-time)
+    -   [Regularize your model](#regularize-your-model)
+        -   [Get more data](#get-more-data)
+        -   [Data augmentation](#data-augmentation)
+        -   [Use a pretrained network](#use-a-pretrained-network)
+        -   [Decrease the batch size](#decrease-the-batch-size)
+        -   [Use early stopping](#use-early-stopping)
+    -   [Squeeze out more performance out of the network](#squeeze-out-more-performance-out-of-the-network)
+        -   [Ensemble](#ensemble)
+        -   [Use early stopping on the val metric](#use-early-stopping-on-the-val-metric)
+    -   [Learn to deal with long iteration times](#learn-to-deal-with-long-iteration-times)
+    -   [Keep a log of what you're working on](#keep-a-log-of-what-youre-working-on)
+    -   [Try to predict how your code will fail](#try-to-predict-how-your-code-will-fail)
+    -   [Resources](#resources)
+-   [Advanced tips](#advanced-tips)
+    -   [Basic architectures are sometimes better](#basic-architectures-are-sometimes-better)
+    -   [Be sure that code that you copied from Github or Stackoverflow is correct](#be-sure-that-code-that-you-copied-from-github-or-stackoverflow-is-correct)
+    -   [Don't excessively tune hyperparameters](#dont-excessively-tune-hyperparameters)
+    -   [Set up cyclic learning rates correctly](#set-up-cyclic-learning-rates-correctly)
+    -   [Manually init layers](#manually-init-layers)
+    -   [Mixed/half precision training](#mixedhalf-precision-training)
+        -   [What is the difference between mixed and half precision training?](#what-is-the-difference-between-mixed-and-half-precision-training)
+    -   [Apex won't install on GCP's deep learning vm](#apex-wont-install-on-gcps-deep-learning-vm)
+        -   [Resources](#resources-1)
+    -   [gradient accumulation](#gradient-accumulation)
+    -   [multi gpu/machine training](#multi-gpumachine-training)
+    -   [determinism](#determinism)
+    -   [Initalization](#initalization)
+        -   [Types of intialization](#types-of-intialization)
+            -   [Xavier or glorot initialization](#xavier-or-glorot-initialization)
+            -   [Kaiming or he initialization](#kaiming-or-he-initialization)
+        -   [Gain](#gain)
+        -   [Pytorch defaults](#pytorch-defaults)
+        -   [Resources](#resources-2)
+    -   [Normalization](#normalization)
+        -   [Batch norm](#batch-norm)
+            -   [You can't use a batch size of 1 with batch norm](#you-cant-use-a-batch-size-of-1-with-batch-norm)
+            -   [Be sure to use model.eval() with batch norm](#be-sure-to-use-modeleval-with-batch-norm)
+            -   [Resources](#resources-3)
+-   [Common errors](#common-errors)
+-   [Pytorch](#pytorch)
+    -   [Losses](#losses)
+        -   [cross_entropy vs nll loss for multi-class classification](#cross_entropy-vs-nll-loss-for-multi-class-classification)
+        -   [binary_cross_entropy vs binary_cross_entropy_with_logits for binary classification tasks](#binary_cross_entropy-vs-binary_cross_entropy_with_logits-for-binary-classification-tasks)
+        -   [Binary classification vs multi-class classification](#binary-classification-vs-multi-class-classification)
+        -   [Pin memory in the dataloader](#pin-memory-in-the-dataloader)
+        -   [`model.eval()` vs `torch.no_grad()`](#modeleval-vs-torchno_grad)
+        -   [What to use for `num_workers` in the dataloader](#what-to-use-for-num_workers-in-the-dataloader)
+    -   [Tensorboard](#tensorboard)
+        -   [How to use it](#how-to-use-it)
+    -   [Use Tensorboard in a kaggle kernel](#use-tensorboard-in-a-kaggle-kernel)
+        -   [What do the histograms mean?](#what-do-the-histograms-mean)
+    -   [Common errors](#common-errors-1)
+        -   [RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation](#runtimeerror-one-of-the-variables-needed-for-gradient-computation-has-been-modified-by-an-inplace-operation)
+        -   [Creating MTGP constants failed error](#creating-mtgp-constants-failed-error)
+        -   [ValueError: Expected more than 1 value per channel when training](#valueerror-expected-more-than-1-value-per-channel-when-training)
+    -   [How to](#how-to)
+        -   [How to implement gradient clipping](#how-to-implement-gradient-clipping)
+        -   [How to implement global max/avg pooling](#how-to-implement-global-maxavg-pooling)
+        -   [How to release gpu memory](#how-to-release-gpu-memory)
+        -   [How to concatenate hidden states of a bidirectional lstm](#how-to-concatenate-hidden-states-of-a-bidirectional-lstm)
+    -   [Torchtext](#torchtext)
+        -   [Sort batches by length](#sort-batches-by-length)
+        -   [Pretrained embeddings](#pretrained-embeddings)
+        -   [Serializing datasets](#serializing-datasets)
+-   [Kaggle](#kaggle)
+    -   [Tips](#tips)
+        -   [Trust your local validation](#trust-your-local-validation)
+        -   [Optimize for the metric](#optimize-for-the-metric)
+        -   [Something that works for someone might not work for you](#something-that-works-for-someone-might-not-work-for-you)
+    -   [Tricks](#tricks)
+        -   [Removing negative samples from a dataset is equivalent to loss weighting](#removing-negative-samples-from-a-dataset-is-equivalent-to-loss-weighting)
+        -   [Thresholding](#thresholding)
+            -   [Using the optimal threshold on a dataset can lead to brittle results](#using-the-optimal-threshold-on-a-dataset-can-lead-to-brittle-results)
+        -   [Shakeup](#shakeup)
+    -   [Encoding categorical features](#encoding-categorical-features)
+    -   [Optimizing code](#optimizing-code)
+        -   [Save processed datasets to disk](#save-processed-datasets-to-disk)
+        -   [Use multiprocessing](#use-multiprocessing)
+    -   [Data Leaks](#data-leaks)
+    -   [Tools](#tools)
+        -   [CTR (Click Through Rate prediction) tools](#ctr-click-through-rate-prediction-tools)
+        -   [FTRL (Follow The Regularized Leader)](#ftrl-follow-the-regularized-leader)
+    -   [Ensembling](#ensembling)
+        -   [Correlation](#correlation)
+-   [Semantic segmentation](#semantic-segmentation)
+-   [NLP](#nlp)
+    -   [awd-LSTM](#awd-lstm)
+    -   [Multitask learning](#multitask-learning)
+    -   [Combine pretrained embeddings](#combine-pretrained-embeddings)
+    -   [Reinitialize random embedding matrices between models](#reinitialize-random-embedding-matrices-between-models)
+    -   [Try out dropout or gaussian noise after the embedding layer](#try-out-dropout-or-gaussian-noise-after-the-embedding-layer)
+    -   [Correctly use masking with softmax](#correctly-use-masking-with-softmax)
+    -   [Use dynamic minibatches when training sequence models](#use-dynamic-minibatches-when-training-sequence-models)
+    -   [Reduce the amount of OOV (Out Of Vocabulary) words](#reduce-the-amount-of-oov-out-of-vocabulary-words)
+    -   [Creating a vocabulary on the train, val sets between folds can lead to information being leaked and artificially increasing your score](#creating-a-vocabulary-on-the-train-val-sets-between-folds-can-lead-to-information-being-leaked-and-artificially-increasing-your-score)
+    -   [How to use `pad_packed_sequence` and `pack_padded_sequence`](#how-to-use-pad_packed_sequence-and-pack_padded_sequence)
+    -   [Transformers](#transformers)
+-   [Gradient boosting](#gradient-boosting)
+    -   [How to set hyperparameters](#how-to-set-hyperparameters)
+    -   [Resources](#resources-4)
+-   [Setting up your environment](#setting-up-your-environment)
+    -   [Jupyter notebooks](#jupyter-notebooks)
+    -   [Python 3.6+](#python-36)
+        -   [Conda](#conda)
+-   [Build your own library](#build-your-own-library)
+-   [Resources](#resources-5)
+    -   [Essential tools](#essential-tools)
+    -   [Model zoos](#model-zoos)
+    -   [Arxiv alternatives](#arxiv-alternatives)
+    -   [Demos](#demos)
+    -   [Link aggregators](#link-aggregators)
+    -   [Machine learning as a service](#machine-learning-as-a-service)
+    -   [Coreml](#coreml)
+    -   [Courses](#courses)
+    -   [Miscelaneous](#miscelaneous)
+-   [ideas](#ideas)
+-   [Contributing](#contributing)
+-   [Authors](#authors)
+-   [License](#license)
+-   [Acknowledgements](#acknowledgements)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## General tips
 
-https://karpathy.github.io/2019/04/25/recipe has some great best practices for training neural networks. Some of these tips include:
+https://karpathy.github.io/2019/04/25/recipe has some great best practices for training neural networks. Some of his tips include:
 
 ### Look at the wrongly classified predictions of your network
 
@@ -166,8 +191,6 @@ This can help tell you what might be wrong with your dataset or model.
 ### Always set the random seed
 
 This will prevent (most, but not all!) variation in results between otherwise identical training runs.
-
-If you're using pytorch, you can set the random seed by following: _link to random seed setting pytorch_
 
 ### Make a baseline and then increase the size of your model until it overfits
 
@@ -231,6 +254,8 @@ Ensemble multiple models either trained on different cross validation splits of 
 -   correlation in ensembles
 -   noise in ensembling
 
+---
+
 Another great resource for best practices when training neural networks is (http://amid.fish/reproducing-deep-rl). This article focused on best practices for deep rl, but most of its recommendations are still useful on normal machine learning. Some of these tips include:
 
 ### Learn to deal with long iteration times
@@ -273,7 +298,7 @@ If you're using a cyclic learning rate, be sure that the learning rate is at it'
 
 ### Manually init layers
 
-Pytorch will automatically initialize layers for you, but depending on your activation function, you might want to use the correct gain for your activation function _init details_
+Pytorch will automatically initialize layers for you, but depending on your activation function, you might want to use the correct gain for your activation function. Take a look at the pytorch [documentation](https://pytorch.org/docs/stable/nn.init.html) for more information.
 
 ### Mixed/half precision training
 
@@ -287,7 +312,7 @@ Nvidia's Volta and Turing GPUs contain tensor cores that can do fast fp16 matrix
 
 Mixed precision solves these problems by keeping a master copy of the model's parameters in 32 bit floats. The inputs and the model's parameters are still cast to fp16, but after the backwards pass, the gradients are copied to the master copy and cast to fp32. The parameters are updated in fp32 to prevent gradients from underflowing, and the new, updated master copy's parameters are cast to fp16 and copied to the original fp16 model. Nvidia's apex library recommends using mixed precision in a different way by casting inputs to tensor core-friendly operations to fp16 and keeping other operations in fp32. Both of these mixed precision approaches have an overhead compared to half precision training, but are faster and use less vram than fp32 training.
 
-_example_
+Take a look at (https://medium.com/huggingface/training-larger-batches-practical-tips-on-1-gpu-multi-gpu-distributed-setups-ec88c3e51255) for more information.
 
 ### Apex won't install on GCP's deep learning vm
 
@@ -348,34 +373,23 @@ from pytorch_zoo.utils import seed_environment
 seed_environment(42)
 ```
 
-If you want more information on determinism in pytorch, take a look at these articles:
+If you want more information on determinism in pytorch, take a look at this:
 
 -   https://discuss.pytorch.org/t/how-to-get-deterministic-behavior/18177/7
 -   https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/72770
 -   https://www.kaggle.com/bminixhofer/deterministic-neural-networks-using-pytorch
+-   https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/72040
 
-### initalization
+### Initalization
 
-_edit_
-
-#### Initialization methodology
-
--   means and stddevs of activations should be close to 0 and 1 to prevent gradients exploding or vanishing
--   activations of layers have stddevs close to sqrt(num_input_channels)
--   so, to get the stddevs back to 1, multiply random weights by 1 / sqrt(c_in)
--   bias weights should be initialized to 0
--   this works well without activations, but results in vanishing or exploding gradients when used with a tanh or sigmoid activation function
-
--   intializations can either be from a uniform distribution or a normal distribution
--   use xavier for sigmoid and softmax activations
--   use kaiming for relu or leaky relu activations
+I made some notes about initialization in [this](https://gist.github.com/bkkaggle/58d4e58ac2a5101e42e2d1af9399c638) gist.
 
 #### Types of intialization
 
 ##### Xavier or glorot initialization
 
 -   uniform initialization
-    -   bound a uniform distribution between +/- sqrt(6 / (c_in + c_out))
+    -   bounds a uniform distribution between +/- sqrt(6 / (c_in + c_out))
 -   normal initialization
 
     -   multiply a normal distribution by sqrt(2 / (c_in + c_out))
@@ -406,7 +420,6 @@ _edit_
 
 #### Resources
 
--   https://gist.github.com/bkkaggle/58d4e58ac2a5101e42e2d1af9399c638
 -   https://github.com/pytorch/pytorch/issues/15314
 -   https://medium.com/@sakeshpusuluri123/activation-functions-and-weight-initialization-in-deep-learning-ebc326e62a5c
 -   https://pytorch.org/docs/stable/_modules/torch/nn/init.html
@@ -427,13 +440,9 @@ The original batch normalization paper put the batch norm layer before the activ
 
 Batch norm relies on the mean and variance of all the elements in a batch, it won't work if you're using a batch size of one while training, so either skip over any leftover batches with batch sizes of 1 or increase the batch size to atleast 2.
 
-_Link to batch size 1 error_
-
 ##### Be sure to use model.eval() with batch norm
 
 Run `model.eval()` before your validation loop to make sure pytorch uses the running mean and variance calculated over the training set. Also make sure to call `model.train()` before your training loop to start calculating the batch norm statistics again. You can read more about this at (https://discuss.pytorch.org/t/what-does-model-eval-do-for-batchnorm-layer/7146)
-
-_link to pytorch model.eval() tip_
 
 ##### Resources
 
@@ -504,7 +513,7 @@ get_ipython().system_raw('tensorboard --logdir ./logs --host 0.0.0.0 --port 6006
 !ssh -o "StrictHostKeyChecking no" -R 80:localhost:6006 serveo.net
 ```
 
-I also have another quickstart at my pytorch zoo _link_ repository: (https://github.com/bkkaggle/pytorch_zoo#viewing-training-progress-with-tensorboard-in-a-kaggle-kernel)
+I also have another quickstart at my [pytorch_zoo](https://github.com/bkkaggle/pytorch_zoo#viewing-training-progress-with-tensorboard-in-a-kaggle-kernel) repository.
 
 #### What do the histograms mean?
 
@@ -601,33 +610,35 @@ Here are some of tips and tricks I picked up while participating in kaggle compe
 
 ### Tips
 
--   optimize for the metric
--   Something that works for someone might not help you
--   https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/discussion/87756
--   https://www.kaggle.com/c/tgs-salt-identification-challenge/discussion/65226
--   https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/79556
+#### Trust your local validation
+
+#### Optimize for the metric
+
+The goal of kaggle competitions is to get the highest (or lowest) score on a specific metric. To do this, you might need to modify your model's loss function. For example, if the competition metric penalizes mistakes on rare classes more than common classes, oversampling or weighting the loss in favor of those classes can force the model to optimize for that metric.
+
+#### Something that works for someone might not work for you
+
+Just because someone says on the discussion forum that a particular technique or module works better for them doesn't automatically mean that it will work for you.
 
 ### Tricks
 
--   if you don't want to use loss weighting, remove negative samples from the dataset (https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/discussion/ 97484)
--   https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/72040
--   https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/79720
--   https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/79911
--   https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/72770
--   https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/77406
--   https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/discussion/94779#547596
+#### Removing negative samples from a dataset is equivalent to loss weighting
 
 #### Thresholding
 
--   https://www.kaggle.com/c/tgs-salt-identification-challenge/discussion/66465
+##### Using the optimal threshold on a dataset can lead to brittle results
+
+If you choose thresholds for (binary) classification problems by choosing whatever value gives you the optimal score on a validation set, the threshold might be overfitting to the specific train-val split or to the specific architecture/hyperparameters. This can have two effects. First, the optimial threshold you found on the val set might not be the optimal threshold on the held out test set, decreasing your score. Second, this makes comparing results between runs with different model architectures or hyperparameters more difficult. Using different thresholds means that a model that is actually worse might get a higher score than a better model if you find a 'lucky' threshold.
 
 #### Shakeup
 
--   https://www.kaggle.com/c/tgs-salt-identification-challenge/discussion/67090
--   https://www.kaggle.com/c/planet-understanding-the-amazon-from-space/discussion/36809
--   https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/75821
+Shakeup prediction is a powerful tool to predict the likely range of scores for your model when evaluated on an unknown test set. It was first introduced by the winner of a kaggle competition as a way to stabilize his models in (https://www.kaggle.com/c/planet-understanding-the-amazon-from-space/discussion/36809). It has also been used [here](https://www.kaggle.com/c/tgs-salt-identification-challenge/discussion/67090) and [here](https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/75821).
 
 ### Encoding categorical features
+
+Encoding categorical features is a pretty important thing to do when working with tabular data.
+
+Some resources I found for this are:
 
 -   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/79045
 -   https://www.kaggle.com/vprokopev/mean-likelihood-encodings-a-comprehensive-study
@@ -636,37 +647,54 @@ Here are some of tips and tricks I picked up while participating in kaggle compe
 
 ### Optimizing code
 
--   Use multiprocessing
--   https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/discussion/87586
+#### Save processed datasets to disk
+
+As long as your dataset isn't too large, saving the processed dataset to disk as a `.pkl` file, then loading it in whenever you need to use it, will save you time and will help increase your GPU utilization.
+
+#### Use multiprocessing
+
+Python's [`multiprocessing`](https://docs.python.org/2/library/multiprocessing.html) library can help you take full advantage of all the cores in your CPU.
 
 ### Data Leaks
+
+Finding leaks in a dataset is a difficult, but sometimes useful skill.
+
+Some good examples of how kagglers found leaks are:
 
 -   https://www.kaggle.com/raddar/towards-de-anonymizing-the-data-some-insights
 -   https://www.kaggle.com/cpmpml/raddar-magic-explained-a-bit/
 
 ### Tools
 
+-   https://github.com/mxbi/mlcrate
+-   https://github.com/bkkaggle/pytorch_zoo (I made this)
+
+#### CTR (Click Through Rate prediction) tools
+
 -   https://github.com/guoday/ctrNet-tool
--   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/75246
 -   https://www.kaggle.com/c/avazu-ctr-prediction/discussion/10927
 -   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/75149
 -   https://www.kaggle.com/scirpus/microsoft-libffm-munger
 -   https://www.kaggle.com/c/talkingdata-adtracking-fraud-detection/discussion/56497#331685
--   https://github.com/goldentom42/py_ml_utils
 
-### ensembling
+#### FTRL (Follow The Regularized Leader)
 
--   Try other forms of ensembling than cv
--   Blend with linear regression
--   Pay more attention to correlations between folds
--   Optimizing thresholds can lead to "brittle" models
--   Rely more on shakeup predictions
--   Random initializations between folds might help diversity
--   Look at hill climbing to get best coefs
+-   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/75246
+
+### Ensembling
+
+#### Correlation
+
+Ensembling models with low correlations is better than ensembling models with high correlations.
+
+More information can be found here:
+
 -   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/80368
 -   https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge/discussion/51058
 
 ## Semantic segmentation
+
+Some good resources for semantic segmentation include:
 
 -   http://blog.qure.ai/notes/semantic-segmentation-deep-learning-review
 -   https://tuatini.me/practical-image-segmentation-with-unet/
@@ -675,59 +703,105 @@ Here are some of tips and tricks I picked up while participating in kaggle compe
 
 ## NLP
 
--   Mask before softmax
--   Use distribution of oov embeddings
--   Weighted average of embeddings
--   Spatial dropout after embeddings
--   reinit embedding matrix between runs
--   Bucket sentences in batches with similar lengths
--   Concentrate on embeddings layer and get least amount of oov words
--   Spatial dropout after embeddings
--   Gaussian noise after embeddings
--   sort data by length in torch dataset and don't use a random sampler
--   vocabulary on train val and test between folds can lead to information being leaked and artificially increases cv score
+Take a look at some of these blog posts:
 
--   pytorch nlp
-    -   https://discuss.pytorch.org/t/packedsequence-for-seq2seq-model/3907
-    -   https://discuss.pytorch.org/t/solved-multiple-packedsequence-input-ordering/2106/7
--   transformers
-    -   https://blog.floydhub.com/the-transformer-in-pytorch/
-    -   http://www.wildml.com/2016/01/attention-and-memory-in-deep-learning-and-nlp/
-    -   https://jalammar.github.io/illustrated-transformer/
-    -
--   https://towardsdatascience.com/word2vec-skip-gram-model-part-1-intuition-78614e4d6e0b
--   https://karpathy.github.io/2015/05/21/rnn-effectiveness/
 -   http://ruder.io/a-review-of-the-recent-history-of-nlp/
--   http://ruder.io/multi-task/
--   http://ruder.io/multi-task-learning-nlp/
 -   https://medium.com/huggingface/learning-meaning-in-natural-language-processing-the-semantics-mega-thread-9c0332dfe28e
--   https://github.com/sebastianruder/NLP-progress
--   https://nlpprogress.com
 -   https://medium.com/huggingface/100-times-faster-natural-language-processing-in-python-ee32033bdced
+
+### awd-LSTM
+
+Take a look at these links:
+
 -   https://github.com/salesforce/awd-lstm-lm
 -   https://www.fast.ai/2017/08/25/language-modeling-sota/
--   https://towardsdatascience.com/word2vec-skip-gram-model-part-1-intuition-78614e4d6e0b
+
+### Multitask learning
+
+Take a look at these links:
+
+-   http://ruder.io/multi-task/
+-   http://ruder.io/multi-task-learning-nlp/
+
+### Combine pretrained embeddings
+
+Adding/concatenating/(weighted) averaging multiple pretrained embeddings almost always leads to a boost in accuracy.
+
+### Reinitialize random embedding matrices between models
+
+Initializing embeddings for unknown words randomly helps increase the diversity between models.
+
+From: (https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/79720)
+
+### Try out dropout or gaussian noise after the embedding layer
+
+It can help increase model diversity and decrease overfitting
+
+### Correctly use masking with softmax
+
+### Use dynamic minibatches when training sequence models
+
+Using this will try to create batches of examples with equal lengths to minimize unncessary padding and wasted calculations. The code to use this is available at (https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification/discussion/94779)
+
+### Reduce the amount of OOV (Out Of Vocabulary) words
+
+### Creating a vocabulary on the train, val sets between folds can lead to information being leaked and artificially increasing your score
+
+-   https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/79556
+
+### How to use `pad_packed_sequence` and `pack_padded_sequence`
+
+Take a look at these links:
+
+-   https://discuss.pytorch.org/t/packedsequence-for-seq2seq-model/3907
+-   https://discuss.pytorch.org/t/solved-multiple-packedsequence-input-ordering/2106/7
+
+### Transformers
+
+Take a look at these links:
+
+-   https://blog.floydhub.com/the-transformer-in-pytorch/
+-   http://www.wildml.com/2016/01/attention-and-memory-in-deep-learning-and-nlp/
+-   https://jalammar.github.io/illustrated-transformer/
 
 ## Gradient boosting
 
--   https://sites.google.com/view/lauraepp/parameters
--   https://xgboost.readthedocs.io/en/latest/tutorials/model.html
--   http://mlexplained.com/2018/01/05/lightgbm-and-xgboost-explained/
--   https://github.com/aksnzhy/xlearn
--   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/78253
+### How to set hyperparameters
 
-## setup
+Laurae's [website](https://sites.google.com/view/lauraepp/parameters) is the best place to understand what parameters to use and what values to set them to.
+
+### Resources
+
+-   https://www.kaggle.com/c/microsoft-malware-prediction/discussion/78253
+-   http://mlexplained.com/2018/01/05/lightgbm-and-xgboost-explained
+
+-   documentation
+    -   https://xgboost.readthedocs.io/en/latest/tutorials/model.html
+    -   https://lightgbm.readthedocs.io/en/latest/
+    -   https://xlearn-doc.readthedocs.io/en/latest/index.html
+    -   https://catboost.ai/docs/
+
+## Setting up your environment
+
+### Jupyter notebooks
 
 -   https://stackoverflow.com/questions/43759610/how-to-add-python-3-6-kernel-alongside-3-5-on-jupyter
--   https://www.rosehosting.com/blog/how-to-install-python-3-6-4-on-debian-9/
 -   https://forums.fast.ai/t/jupyter-notebook-keyerror-allow-remote-access/24392
+
+### Python 3.6+
+
+-   https://www.rosehosting.com/blog/how-to-install-python-3-6-4-on-debian-9/
+
+#### Conda
+
 -   https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#activating-an-environment
 -   https://stackoverflow.com/questions/35245401/combining-conda-environment-yml-with-pip-requirements-txt
 -   https://stackoverflow.com/questions/42352841/how-to-update-an-existing-conda-environment-with-a-yml-file
 
 ## Build your own library
 
--   https://github.com/bkkaggle/L2
+I recently built my own machine learning [library](https://github.com/bkkaggle/L2), here are some of the resources I used:
+
 -   https://medium.com/@florian.caesar/how-to-create-a-machine-learning-framework-from-scratch-in-491-steps-93428369a4eb
 -   https://github.com/joelgrus/joelnet
 -   https://medium.com/@johan.mabille/how-we-wrote-xtensor-1-n-n-dimensional-containers-f79f9f4966a7
@@ -737,11 +811,17 @@ Here are some of tips and tricks I picked up while participating in kaggle compe
 
 ## Resources
 
-### model zoos
+### Essential tools
 
 -   https://paperswithcode.com
+-   https://www.arxiv-vanity.com
+-   http://www.arxiv-sanity.com
+
+### Model zoos
+
 -   https://modelzoo.co/blog
 -   https://modeldepot.io/search
+-   https://github.com/sebastianruder/NLP-progress
 
 ### Arxiv alternatives
 
@@ -760,8 +840,9 @@ Here are some of tips and tricks I picked up while participating in kaggle compe
 -   http://nvidia-research-mingyuliu.com/gaugan/
 -   http://nvidia-research-mingyuliu.com/petswap/
 
-### Discover
+### Link aggregators
 
+-   news.ycombinator.com
 -   https://www.sciencewiki.com
 -   https://git.news/?ref=producthunt
 
@@ -773,12 +854,15 @@ Here are some of tips and tricks I picked up while participating in kaggle compe
 ### Coreml
 
 -   https://developer.apple.com/machine-learning/models/
+-   https://github.com/huggingface/swift-coreml-transformers
+-   https://www.fritz.ai
 
 ### Courses
 
 -   https://fast.ai
 -   https://www.coursera.org/learn/competitive-data-science
--   deeplearning.ai
+-   https://www.deeplearning.ai
+-   https://www.kaggle.com/learn/overview
 
 ### Miscelaneous
 
@@ -789,12 +873,7 @@ Here are some of tips and tricks I picked up while participating in kaggle compe
 
 # ideas
 
--   code from quora and toxic competitions
--   github stars
--   julia
--   batch norm before or after relu
 -   logo
--   format links
 
 # Contributing
 
