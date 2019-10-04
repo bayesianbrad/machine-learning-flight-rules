@@ -306,7 +306,7 @@ Pytorch will automatically initialize layers for you, but depending on your acti
 
 ### Mixed/half precision training
 
-Mixed or half precision training lets you train on larger batch sizes and can speed up your training.
+Mixed or half precision training lets you train on larger batch sizes and can speed up your training. Take a look at [this](https://discuss.pytorch.org/t/training-with-half-precision/11815) if you want to simply use half precision training.
 
 #### What is the difference between mixed and half precision training?
 
