@@ -32,7 +32,7 @@
     <a href='#acknowledgements'>Acknowledgements</a>
 </p>
 
-<p align='center'><strong>Made by <a href='https://github.com/bkkaggle'>Bilal Khan</a> • https://bkkaggle.github.io</strong></p>
+<p align='center'><strong>Made by <a href='https://github.com/bkkaggle'>Bilal Khan</a> • https://bilal.software</strong></p>
 
 ## What are "flight rules"?
 
