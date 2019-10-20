@@ -32,6 +32,8 @@
     <a href='#acknowledgements'>Acknowledgements</a>
 </p>
 
+<p align='center'><strong>Made by <a href='https://github.com/bkkaggle'>Bilal Khan</a> • https://bkkaggle.github.io</strong></p>
+
 ## What are "flight rules"?
 
 _Copied from: https://github.com/k88hudson/git-flight-rules_
