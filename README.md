@@ -359,7 +359,7 @@ Take a look at (https://medium.com/huggingface/training-larger-batches-practical
 
 ### determinism
 
-Pytorch will give you different results every time you run a script unless you set random seeds for python, numpy, and pytorch. Fortunately, doing this is very simple and only requires you to add a few lines to the top of each python file.
+Pytorch will give you different results every time you run a script unless you set random seeds for python, numpy, and pytorch. Fortunately, doing this is very simple and only requires you to add a few lines to the top of each python file. There is a catch though, setting `torch.backends.cudnn.deterministic` to `True` will slightly slow down your network.
 
 ```python
 SEED = 42
@@ -369,7 +369,7 @@ torch.cuda.manual_seed(SEED)
 torch.backends.cudnn.deterministic = True
 ```
 
-If you want a simple one-liner, check out my `pytorch_zoo` library on github (https://github.com/bkkaggle/pytorch_zoo#seed_environmentseed42).
+If you want a simple one-line way to do this, check out my `pytorch_zoo` library on github (https://github.com/bkkaggle/pytorch_zoo#seed_environmentseed42).
 
 ```python
 from pytorch_zoo.utils import seed_environment
@@ -377,7 +377,7 @@ from pytorch_zoo.utils import seed_environment
 seed_environment(42)
 ```
 
-If you want more information on determinism in pytorch, take a look at this:
+If you want more information on determinism in pytorch, take a look at these links:
 
 -   https://discuss.pytorch.org/t/how-to-get-deterministic-behavior/18177/7
 -   https://www.kaggle.com/c/quora-insincere-questions-classification/discussion/72770
@@ -388,6 +388,8 @@ If you want more information on determinism in pytorch, take a look at this:
 
 I made some notes about initialization in [this](https://gist.github.com/bkkaggle/58d4e58ac2a5101e42e2d1af9399c638) gist.
 
+The idea behind initializing weights in specific ways instead of by random is to keep the means and stddevs of the activations close to 0 and 1 respectively, preventing activations and therefore the gradients from exploding or vanishing.
+
 #### Types of intialization
 
 ##### Xavier or glorot initialization
@@ -395,11 +397,9 @@ I made some notes about initialization in [this](https://gist.github.com/bkkaggl
 -   uniform initialization
     -   bounds a uniform distribution between +/- sqrt(6 / (c_in + c_out))
 -   normal initialization
-
-    -   multiply a normal distribution by sqrt(2 / (c_in + c_out))
-    -   or create a normal distribution with mean 0 and stddev sqrt(2 / (c_in + c_out))
-
--   helps keep identical variances across layers
+    -   multiplys a normal distribution with mean 0 and stddev 1 by sqrt(2 / (c_in + c_out))
+    -   Another way to do this is create a normal distribution with mean 0 and stddev sqrt(2 / (c_in + c_out))
+-   The logic behind this is to try to keep identical variances across layers
 
 ##### Kaiming or he initialization
 
@@ -519,9 +519,9 @@ get_ipython().system_raw('tensorboard --logdir ./logs --host 0.0.0.0 --port 6006
 
 I also have another quickstart at my [pytorch_zoo](https://github.com/bkkaggle/pytorch_zoo#viewing-training-progress-with-tensorboard-in-a-kaggle-kernel) repository.
 
-#### What do the histograms mean?
+#### What do all the Tensorboard histograms mean?
 
-Take a look at these discussion posts:
+Take a look at these stackoberflow posts:
 
 -   https://stackoverflow.com/questions/42315202/understanding-tensorboard-weight-histograms
 -   https://stackoverflow.com/questions/38149622/what-is-a-good-explanation-of-how-to-read-the-histogram-feature-of-tensorboard
@@ -616,9 +616,11 @@ Here are some of tips and tricks I picked up while participating in kaggle compe
 
 #### Trust your local validation
 
+Your score on your local validation set should be the most important, and sometimes the only, metric to pay attention to. Creating a validation set that you can trust to tell you whether you are or are not making progress is very important.
+
 #### Optimize for the metric
 
-The goal of kaggle competitions is to get the highest (or lowest) score on a specific metric. To do this, you might need to modify your model's loss function. For example, if the competition metric penalizes mistakes on rare classes more than common classes, oversampling or weighting the loss in favor of those classes can force the model to optimize for that metric.
+The goal of kaggle competitions is to get the highest (or lowest, depending on the metric) score on a specific metric. To do this, you might need to modify your model's loss function. For example, if the competition metric penalizes mistakes on rare classes more than common classes, oversampling or weighting the loss in favor of those classes can force the model to optimize for that metric.
 
 #### Something that works for someone might not work for you
 
@@ -627,6 +629,8 @@ Just because someone says on the discussion forum that a particular technique or
 ### Tricks
 
 #### Removing negative samples from a dataset is equivalent to loss weighting
+
+This usually works well and is easier to do than loss weighting.
 
 #### Thresholding
 
@@ -817,9 +821,9 @@ I recently built my own machine learning [library](https://github.com/bkkaggle/L
 
 ### Essential tools
 
--   https://paperswithcode.com
--   https://www.arxiv-vanity.com
--   http://www.arxiv-sanity.com
+-   https://paperswithcode.com - This website lists available implementations of papers along with leaderboards showing which models are currently SOTA on a range of tasks and datasets
+-   https://www.arxiv-vanity.com - This site converts PDF papers from Arxiv to mobile-friendly responsive web pages.
+-   http://www.arxiv-sanity.com - This site is a better way to keep up to date with popular and interesting papers.
 
 ### Model zoos
 
@@ -833,7 +837,7 @@ I recently built my own machine learning [library](https://github.com/bkkaggle/L
 -   http://www.arxiv-sanity.com
 -   https://www.scihive.org
 
-### Demos
+### Machine learning demos
 
 -   https://ganbreeder.app
 -   https://talktotransformer.com
@@ -846,7 +850,7 @@ I recently built my own machine learning [library](https://github.com/bkkaggle/L
 
 ### Link aggregators
 
--   news.ycombinator.com
+-   https://news.ycombinator.com
 -   https://www.sciencewiki.com
 -   https://git.news/?ref=producthunt
 
@@ -877,11 +881,13 @@ I recently built my own machine learning [library](https://github.com/bkkaggle/L
 
 # Contributing
 
+I've tried to make sure that all the information in this repository is accurate, but if you find something that you think is wrong, please let me know by opening an issue.
+
 This repository is still a work in progress, so if you find a bug, think there is something missing, or have any suggestions for new features, feel free to open an issue or a pull request. Feel free to use the library or code from it in your own projects, and if you feel that some code used in this project hasn't been properly accredited, please open an issue.
 
 # Authors
 
--   _Bilal Khan_ - _initial work_
+-   _Bilal Khan_
 
 # License
 
