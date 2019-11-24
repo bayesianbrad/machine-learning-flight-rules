@@ -7,7 +7,7 @@
 </h4>
 
 <p align='center'>
-    <a href="https://www.producthunt.com/posts/l2?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-l2" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=174622&theme=dark" alt="L2 - A  deep learning library implemented from scratch in C++ | Product Hunt Embed" style="width: 250px; height: 54px;" width="250px" height="54px" />
+    <a href="https://www.producthunt.com/posts/machine-learning-flight-rules?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-machine-learning-flight-rules" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=175170&theme=dark" alt="Machine Learning Flight Rules - Tips and tricks for doing machine learning right | Product Hunt Embed" style="width: 250px; height: 54px;" width="250px" height="54px" />
     </a>
     <a href="https://forthebadge.com">
         <img src="https://forthebadge.com/images/badges/built-with-love.svg" alt="forthebadge">
