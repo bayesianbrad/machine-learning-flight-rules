@@ -1,5 +1,5 @@
 <h1 align='center'>
-    Flight rules for machine learning
+    Flight Rules for Machine Learning
 </h1>
 
 <h4 align='center'>
